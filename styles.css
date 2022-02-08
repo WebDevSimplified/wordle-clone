@@ -40,6 +40,7 @@ body {
   border-radius: .25em;
   cursor: pointer;
   user-select: none;
+  border-radius:3px;
 }
 
 .key.large {
