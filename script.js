@@ -15387,14 +15387,33 @@ function submitGuess() {
 }
 
 function computeColor(targetWord, guess, index) {
-  const letter = guess[index]
-  if (targetWord[index] === letter) {
-    return "correct"
-  } else if (targetWord.includes(letter)) {
-    return "wrong-location"
-  } else {
-    return "wrong"
+  let colors = Array(WORD_LENGTH).fill("wrong")
+  for (var i = 0; i < WORD_LENGTH; ++i) {
+    if (targetWord[i] === guess[i]) {
+      colors[i] = "correct"
+    } else if (targetWord.includes(guess[i])) {
+      colors[i] = "wrong-location"
+    }
   }
+  for (var i = 0; i < WORD_LENGTH; ++i) {
+    if (colors[i] == "wrong-location") {
+      // Only the correct number of tiles should be colored yellow.
+      const letter = guess[i]
+      const targetCount = targetWord.split('').filter((ch) => ch == letter).length
+      const greenCount = Array.from(Array(WORD_LENGTH).keys()).filter((j) => (guess[j] === letter && colors[j] === "correct")).length
+      const maxYellowCount = targetCount - greenCount
+      let currentYellowCount = 0
+      for (var j = 0; j < i; ++j) {
+        if (guess[j] == letter && colors[j] === "wrong-location") {
+          currentYellowCount += 1
+        }
+      }
+      if (currentYellowCount == maxYellowCount) {
+        colors[i] = "wrong"
+      }
+    }
+  }
+  return colors[index]
 }
 
 function flipTile(tile, index, array, guess) {
