@@ -15383,43 +15383,36 @@ function submitGuess() {
   }
 
   stopInteraction()
-  activeTiles.forEach((...params) => flipTile(...params, guess))
+  const colors = computeColors(targetWord, guess)
+  activeTiles.forEach((tile, index, array) => flipTile(tile, index, array, guess, colors[index]))
 }
 
-function computeColor(targetWord, guess, index) {
-  let colors = Array(WORD_LENGTH).fill("wrong")
-  for (var i = 0; i < WORD_LENGTH; ++i) {
-    if (targetWord[i] === guess[i]) {
+function computeColors(targetWord, guess) {
+  const colors = Array(WORD_LENGTH).fill("wrong")
+  const outOfPlace = {}
+  for (let i = 0; i < WORD_LENGTH; ++i) {
+    const letter = targetWord[i]
+    if (guess[i] === letter) {
       colors[i] = "correct"
-    } else if (targetWord.includes(guess[i])) {
-      colors[i] = "wrong-location"
+    } else {
+      outOfPlace[letter] = (outOfPlace[letter] || 0) + 1
     }
   }
-  for (var i = 0; i < WORD_LENGTH; ++i) {
-    if (colors[i] == "wrong-location") {
-      // Only the correct number of tiles should be colored yellow.
-      const letter = guess[i]
-      const targetCount = targetWord.split('').filter((ch) => ch == letter).length
-      const greenCount = Array.from(Array(WORD_LENGTH).keys()).filter((j) => (guess[j] === letter && colors[j] === "correct")).length
-      const maxYellowCount = targetCount - greenCount
-      let currentYellowCount = 0
-      for (var j = 0; j < i; ++j) {
-        if (guess[j] == letter && colors[j] === "wrong-location") {
-          currentYellowCount += 1
-        }
-      }
-      if (currentYellowCount == maxYellowCount) {
-        colors[i] = "wrong"
+  for (let i = 0; i < WORD_LENGTH; ++i) {
+    const letter = guess[i]
+    if (targetWord[i] !== letter) {
+      if (outOfPlace[letter]) {
+        colors[i] = "wrong-location"
+        outOfPlace[letter] -= 1
       }
     }
   }
-  return colors[index]
+  return colors
 }
 
-function flipTile(tile, index, array, guess) {
+function flipTile(tile, index, array, guess, newColor) {
   const letter = tile.dataset.letter
   const key = keyboard.querySelector(`[data-key="${letter}"i]`)
-  const newColor = computeColor(targetWord, guess, index)
 
   setTimeout(() => {
     tile.classList.add("flip")
