@@ -15365,62 +15365,70 @@ function deleteKey() {
 }
 
 function submitGuess() {
-  const activeTiles = [...getActiveTiles()]
+  const activeTiles = [...getActiveTiles()];
   if (activeTiles.length !== WORD_LENGTH) {
-    showAlert("Not enough letters")
-    shakeTiles(activeTiles)
-    return
+    showAlert("Not enough letters");
+    shakeTiles(activeTiles);
+    return;
   }
 
   const guess = activeTiles.reduce((word, tile) => {
-    return word + tile.dataset.letter
-  }, "")
+    return word + tile.dataset.letter;
+  }, "");
+  const targetWordArray = targetWord.split("");
 
   if (!dictionary.includes(guess)) {
-    showAlert("Not in word list")
-    shakeTiles(activeTiles)
-    return
+    showAlert("Not in word list");
+    shakeTiles(activeTiles);
+    return;
   }
 
-  stopInteraction()
-  activeTiles.forEach((...params) => flipTile(...params, guess))
+  stopInteraction();
+  activeTiles.forEach((...params) =>
+    flipTile(...params, guess, targetWordArray)
+  );
 }
 
-function flipTile(tile, index, array, guess) {
-  const letter = tile.dataset.letter
-  const key = keyboard.querySelector(`[data-key="${letter}"i]`)
+function flipTile(tile, index, array, guess, targetWordArray) {
+  const letter = tile.dataset.letter;
+  const key = keyboard.querySelector(`[data-key="${letter}"i]`);
   setTimeout(() => {
-    tile.classList.add("flip")
-  }, (index * FLIP_ANIMATION_DURATION) / 2)
+    tile.classList.add("flip");
+  }, (index * FLIP_ANIMATION_DURATION) / 2);
 
   tile.addEventListener(
     "transitionend",
     () => {
-      tile.classList.remove("flip")
-      if (targetWord[index] === letter) {
-        tile.dataset.state = "correct"
-        key.classList.add("correct")
-      } else if (targetWord.includes(letter)) {
-        tile.dataset.state = "wrong-location"
-        key.classList.add("wrong-location")
+      tile.classList.remove("flip");
+      if (targetWordArray[index] === letter) {
+        tile.dataset.state = "correct";
+        key.classList.add("correct");
+        const letterIndex = targetWordArray.indexOf(letter);
+        targetWordArray.splice(letterIndex, 1, " ");
+      } else if (targetWordArray.includes(letter)) {
+        tile.dataset.state = "wrong-location";
+        key.classList.add("wrong-location");
+        const letterIndex = targetWordArray.indexOf(letter);
+        targetWordArray.splice(letterIndex, 1, " ");
       } else {
-        tile.dataset.state = "wrong"
-        key.classList.add("wrong")
+        tile.dataset.state = "wrong";
+        key.classList.add("wrong");
       }
 
       if (index === array.length - 1) {
         tile.addEventListener(
           "transitionend",
           () => {
-            startInteraction()
-            checkWinLose(guess, array)
+            targetWordArray = targetWord.split("");
+            startInteraction();
+            checkWinLose(guess, array);
           },
           { once: true }
-        )
+        );
       }
     },
     { once: true }
-  )
+  );
 }
 
 function getActiveTiles() {
