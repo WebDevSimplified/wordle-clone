@@ -68,7 +68,6 @@ const targetWords = [
   "panel",
   "crass",
   "flume",
-  "offal",
   "agree",
   "error",
   "swirl",
