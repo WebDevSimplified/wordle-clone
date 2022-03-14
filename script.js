@@ -1,5 +1,8 @@
 const targetWords = [
   "cigar",
+  "pepes",
+  "florp",
+  "asshl",
   "rebut",
   "sissy",
   "humph",
