@@ -15456,15 +15456,18 @@ function shakeTiles(tiles) {
 }
 
 function checkWinLose(guess, tiles) {
+  const usedRows = guessGrid.querySelectorAll("[data-letter]").length / WORD_LENGTH
+  const remainingRows = guessGrid.querySelectorAll(":not([data-letter])").length / WORD_LENGTH
+
   if (guess === targetWord) {
-    showAlert("You Win", 5000)
+    const compliments = ["Genius", "Magnificent", "Impressive", "Splendid", "Great", "Phew"]
+    showAlert(compliments[usedRows - 1], 5000)
     danceTiles(tiles)
     stopInteraction()
     return
   }
 
-  const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
-  if (remainingTiles.length === 0) {
+  if (remainingRows === 0) {
     showAlert(targetWord.toUpperCase(), null)
     stopInteraction()
   }
