@@ -15383,12 +15383,37 @@ function submitGuess() {
   }
 
   stopInteraction()
-  activeTiles.forEach((...params) => flipTile(...params, guess))
+  const colors = computeColors(targetWord, guess)
+  activeTiles.forEach((tile, index, array) => flipTile(tile, index, array, guess, colors[index]))
 }
 
-function flipTile(tile, index, array, guess) {
+function computeColors(targetWord, guess) {
+  const colors = Array(WORD_LENGTH).fill("wrong")
+  const outOfPlace = {}
+  for (let i = 0; i < WORD_LENGTH; ++i) {
+    const letter = targetWord[i]
+    if (guess[i] === letter) {
+      colors[i] = "correct"
+    } else {
+      outOfPlace[letter] = (outOfPlace[letter] || 0) + 1
+    }
+  }
+  for (let i = 0; i < WORD_LENGTH; ++i) {
+    const letter = guess[i]
+    if (targetWord[i] !== letter) {
+      if (outOfPlace[letter]) {
+        colors[i] = "wrong-location"
+        outOfPlace[letter] -= 1
+      }
+    }
+  }
+  return colors
+}
+
+function flipTile(tile, index, array, guess, newColor) {
   const letter = tile.dataset.letter
   const key = keyboard.querySelector(`[data-key="${letter}"i]`)
+
   setTimeout(() => {
     tile.classList.add("flip")
   }, (index * FLIP_ANIMATION_DURATION) / 2)
@@ -15397,17 +15422,8 @@ function flipTile(tile, index, array, guess) {
     "transitionend",
     () => {
       tile.classList.remove("flip")
-      if (targetWord[index] === letter) {
-        tile.dataset.state = "correct"
-        key.classList.add("correct")
-      } else if (targetWord.includes(letter)) {
-        tile.dataset.state = "wrong-location"
-        key.classList.add("wrong-location")
-      } else {
-        tile.dataset.state = "wrong"
-        key.classList.add("wrong")
-      }
-
+      tile.dataset.state = newColor
+      key.classList.add(newColor)
       if (index === array.length - 1) {
         tile.addEventListener(
           "transitionend",
