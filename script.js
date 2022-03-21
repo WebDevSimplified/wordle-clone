@@ -1,5 +1,8 @@
 const targetWords = [
   "cigar",
+  "pepes",
+  "florp",
+  "asshl",
   "rebut",
   "sissy",
   "humph",
@@ -68,13 +71,12 @@ const targetWords = [
   "panel",
   "crass",
   "flume",
-  "offal",
   "agree",
   "error",
   "swirl",
-  "argue",
-  "bleed",
-  "delta",
+  "tests",
+  "skull",
+  "mason",
   "flick",
   "totem",
   "wooer",
@@ -15457,7 +15459,7 @@ function shakeTiles(tiles) {
 
 function checkWinLose(guess, tiles) {
   if (guess === targetWord) {
-    showAlert("You Win", 5000)
+    showAlert("You Win <3", 5000)
     danceTiles(tiles)
     stopInteraction()
     return
