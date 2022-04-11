@@ -15376,7 +15376,7 @@ function submitGuess() {
     return word + tile.dataset.letter
   }, "")
 
-  if (!dictionary.includes(guess)) {
+  if (!dictionary.concat(targetWords).includes(guess)) {
     showAlert("Not in word list")
     shakeTiles(activeTiles)
     return
