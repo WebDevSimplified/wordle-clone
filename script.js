@@ -15344,6 +15344,11 @@ function handleKeyPress(e) {
     pressKey(e.key)
     return
   }
+  
+  if (e.key.match(/^[A-Z]$/)) {
+    pressKey(e.key.toLowerCase())
+    return
+  }
 }
 
 function pressKey(key) {
