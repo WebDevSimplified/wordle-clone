@@ -1,20 +1,24 @@
-let targetWords = "targetWords.json"
-
-fetch( targetWords ).then((response)=>{
+let targetWords_url = "targetWords.json"
+let targetWords = []
+let targetWord = []
+fetch( targetWords_url ).then((response)=>{
   return response.json();
 }).then( (result) => {
-  targetWords = result;
+  targetWords = targetWords.concat( result);
+  targetWord = targetWords[Math.floor(dayOffset)]
 })
 
 
 
-let dictionary = "dictionary.json"
-fetch( dictionary ).then((response)=>{
+let dictionary_url = "dictionary.json"
+let dictionary = []
+fetch( dictionary_url ).then((response)=>{
   return response.json();
 }).then( (result) => {
-  // console.log((typeof result));
-  dictionary = result;
+  dictionary = dictionary.concat(result);
+  // console.log("Dict",)
 })
+
 
 
 const WORD_LENGTH = 5
@@ -26,7 +30,9 @@ const guessGrid = document.querySelector("[data-guess-grid]")
 const offsetFromDate = new Date(2022, 0, 1)
 const msOffset = Date.now() - offsetFromDate
 const dayOffset = msOffset / 1000 / 60 / 60 / 24
-const targetWord = targetWords[Math.floor(dayOffset)]
+
+
+
 
 startInteraction()
 
@@ -125,7 +131,9 @@ function flipTile(tile, index, array, guess) {
     "transitionend",
     () => {
       tile.classList.remove("flip")
+      // console.log(letter , targetWord)
       if (targetWord[index] === letter) {
+
         tile.dataset.state = "correct"
         key.classList.add("correct")
       } else if (targetWord.includes(letter)) {
