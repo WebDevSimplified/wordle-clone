@@ -13,6 +13,10 @@ body {
   font-size: clamp(.5rem, 2.5vmin, 1.5rem);
 }
 
+svg {
+   pointer-events: none;
+}
+
 .keyboard {
   display: grid;
   grid-template-columns: repeat(20, minmax(auto, 1.25em));
